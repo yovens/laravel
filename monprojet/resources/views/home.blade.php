@@ -106,7 +106,7 @@
     .hero {
         height: 100vh;
         /* Remplacement de l'URL externe par le chemin local, traité par Blade */
-        background: url("{{ asset('images/splash.png') }}") center/cover no-repeat;
+        background: url("{{ asset('images/istockphoto-1412904420-612x612.jpg') }}") center/cover no-repeat;
         
         display: flex;
         align-items: center;
@@ -117,7 +117,8 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+       background: rgba(0, 0, 0, 0.75);   
+       
         }
 
         .hero-content {

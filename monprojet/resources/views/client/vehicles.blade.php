@@ -2,31 +2,33 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Véhicules Disponibles | AutoGestion (Autonome)</title>
+    <title>Véhicules Disponibles | AutoGestion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    {{-- Liens Externes --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         /* =================================================================== */
         /* === 1. Variables Globales (Dark Mode par défaut) ================== */
         /* =================================================================== */
         :root {
-            --primary-color: #FF6B6B; 
-            --secondary-color: #4ECDC4; 
+            --primary-color: #FF6B6B; /* Rouge Corail Vif */
+            --secondary-color: #4ECDC4; /* Cyan/Vert d'eau */
             --text-light: #EAEFF4; 
             --text-muted: #94a3b8; 
-            --bg-page: #1F2937; 
-            --card-bg: #2C3E50; 
-            --topbar-height: 65px;
-            
+            --bg-page: #161B22; /* Noir très foncé, proche du GitHub Dark */
+            --card-bg: #1F2A37; 
+            --topbar-height: 70px;
+
+            /* Formulaires et Cartes */
             --form-bg: #1a232f;
             --form-border: #3d526a;
-            --shadow-color: rgba(0, 0, 0, 0.25);
-            --price-badge-bg: rgba(44, 62, 80, 0.85);
+            --shadow-color: rgba(0, 0, 0, 0.5); /* Ombre plus intense */
+            --price-badge-bg: var(--primary-color); /* Badge de prix en couleur primaire */
+            --price-badge-text: var(--bg-page);
             --card-detail-border: #3d526a; 
             --btn-logout-color: var(--bg-page);
         }
@@ -39,112 +41,136 @@
             --secondary-color: #28a745;
             --text-light: #343a40;
             --text-muted: #6c757d; 
-            --bg-page: #f8f9fa;
+            --bg-page: #f4f6f9;
             --card-bg: #ffffff;
             
             --form-bg: #ffffff; 
             --form-border: #ced4da; 
             --shadow-color: rgba(0, 0, 0, 0.15);
-            --price-badge-bg: rgba(255, 255, 255, 0.9);
+            --price-badge-bg: var(--secondary-color);
+            --price-badge-text: #fff;
             --card-detail-border: #dee2e6;
             --btn-logout-color: #fff;
         }
 
 
         /* =================================================================== */
-        /* === 2. Styles de Base (Avec Transition) =========================== */
+        /* === 2. Styles de Base & Topbar (Réutilisés du Dashboard) ========== */
         /* =================================================================== */
         body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             background-color: var(--bg-page);
             min-height: 100vh;
             color: var(--text-light);
             padding-top: var(--topbar-height); 
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.4s, color 0.4s;
         }
         
-        /* 3. Topbar (Corrigée et Thème Adaptatif) */
         .topbar {
             height: var(--topbar-height);
             background: var(--card-bg); 
             box-shadow: 0 4px 15px var(--shadow-color);
+            border-bottom: 1px solid var(--form-border);
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Ajouté pour séparer les éléments */
+            justify-content: space-between; 
             padding: 0 40px;
             position: fixed; 
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 1020;
-            transition: background 0.3s, box-shadow 0.3s;
+            transition: background 0.4s, box-shadow 0.4s, border-color 0.4s;
         }
 
-        .logo { font-size: 22px; font-weight: 700; color: var(--primary-color); text-decoration: none; margin-right: 30px; white-space: nowrap; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary-color); text-decoration: none; text-shadow: 0 0 5px rgba(255, 107, 107, 0.3); }
+        .light-mode .logo { text-shadow: none; }
         .logo i { color: var(--primary-color); margin-right: 5px; }
 
-        .topbar-nav { display: flex; align-items: center; flex-grow: 1; margin-right: auto; }
+        .topbar-nav { display: flex; align-items: center; flex-grow: 1; margin-right: 40px; }
         .topbar-nav a {
             color: var(--text-muted); font-weight: 500; padding: 8px 15px; text-decoration: none;
-            transition: color 0.3s, border-bottom 0.3s; border-bottom: 3px solid transparent; margin: 0 5px;
+            transition: all 0.3s; border-bottom: 3px solid transparent; margin: 0 5px;
             font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
         }
-
-        .topbar-nav a:hover, .topbar-nav a.active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); }
+        .topbar-nav a:hover, .topbar-nav a.active { color: var(--primary-color); background-color: var(--bg-page); border-bottom: 3px solid var(--primary-color); }
 
         .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        
-        .btn-logout {
-            border: 1px solid var(--primary-color); color: var(--primary-color); background-color: transparent;
-            padding: 6px 15px; font-size: 0.9rem; border-radius: 6px; transition: all 0.2s; text-transform: uppercase;
-        }
-        .btn-logout:hover {
-            background-color: var(--primary-color); color: var(--btn-logout-color);
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);
-        }
-        
-        /* NOUVEAU: Bouton de bascule de thème */
-        .btn-theme-toggle {
-            background: none; border: none; color: var(--text-muted); font-size: 1.5rem;
-            transition: color 0.3s, transform 0.2s;
-        }
-        .btn-theme-toggle:hover { color: var(--primary-color); transform: scale(1.1); }
+        .btn-logout { border: 2px solid var(--primary-color); color: var(--primary-color); background-color: transparent; padding: 8px 18px; font-weight: 600; text-transform: uppercase; border-radius: 6px; transition: all 0.2s; }
+        .btn-logout:hover { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.6); transform: scale(1.02); }
+        .btn-theme-toggle { background: none; border: none; color: var(--primary-color); font-size: 1.5rem; transition: color 0.3s, transform 0.2s; }
+        .btn-theme-toggle:hover { color: var(--secondary-color); transform: scale(1.1); }
 
 
         /* =================================================================== */
-        /* === 4. Contenu de la Page Véhicules (Adaptation Thème) ============ */
+        /* === 3. Contenu de la Page Véhicules (Spécifique) ================== */
         /* =================================================================== */
-        .main-content { padding: 40px 40px 80px 40px; }
+        .main-content { 
+            padding: 40px 60px 80px 60px; 
+            max-width: 1600px; /* Plus large pour le catalogue */
+            margin: 0 auto;
+        }
         
-        .page-header-vehicles { color: var(--primary-color); transition: color 0.3s; }
-        .page-header-vehicles i { color: var(--primary-color); }
+        /* Titre de la page */
+        .page-header-vehicles {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .page-header-vehicles i { 
+            color: var(--primary-color); 
+            margin-right: 10px;
+        }
         
-        /* Filtres Adaptatifs */
+        /* Filtres Styles */
         .filter-card {
             background: var(--card-bg);
             border: 1px solid var(--form-border);
             border-radius: 15px;
             box-shadow: 0 8px 30px var(--shadow-color);
             margin-bottom: 50px;
-            padding: 25px 35px;
+            padding: 20px 30px; /* Moins de padding */
             transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
         }
         
-        /* Champs de formulaire (Input/Select) Adaptatifs */
+        /* Champs de formulaire */
         .form-control, .form-select {
             background-color: var(--form-bg) !important;
             border: 1px solid var(--form-border) !important; 
             color: var(--text-light) !important;
             border-radius: 8px;
+            padding: 10px 15px;
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
-        .form-control::placeholder {
-            color: var(--text-muted);
-            opacity: 0.6;
+        .form-control::placeholder { color: var(--text-muted); opacity: 0.7; }
+
+        /* Bouton de filtrage */
+        .btn-filter-ok {
+            background-color: var(--secondary-color);
+            color: var(--bg-page);
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 8px;
         }
-        .search-icon { color: var(--text-muted); transition: color 0.3s; }
+        .btn-filter-ok:hover {
+            background-color: #2ecc71; /* Vert plus vif */
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.5);
+            transform: translateY(-2px);
+        }
         
-        /* Cartes de Véhicules Adaptatives */
+        /* Icone de recherche dans le champ */
+        .search-icon { 
+            position: absolute; 
+            left: 25px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-muted); 
+            transition: color 0.3s; 
+            z-index: 5;
+        }
+        .search-input { padding-left: 40px !important; }
+        
+        /* --- Cartes de Véhicules --- */
         .card-vehicle {
             background: var(--card-bg);
             box-shadow: 0 10px 40px var(--shadow-color);
@@ -153,46 +179,16 @@
             border-radius: 20px;
             overflow: hidden;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .card-vehicle:hover {
-            box-shadow: 0 20px 50px var(--shadow-color);
+            transform: translateY(-8px); /* Élévation au survol */
+            box-shadow: 0 20px 50px var(--shadow-hover);
         }
         
-        /* Badge de Prix */
-        .price-badge {
-            position: absolute;
-            bottom: 15px;
-            right: 0;
-            background: var(--price-badge-bg); 
-            color: var(--secondary-color); 
-            font-size: 1.3rem;
-            font-weight: 700;
-            padding: 5px 15px 5px 25px;
-            border-radius: 10px 0 0 10px;
-            box-shadow: -5px 5px 15px var(--shadow-color);
-            z-index: 10;
-            transition: background 0.3s, color 0.3s;
-        }
-        
-        /* Détails */
-        .card-body h5 { color: var(--text-light); transition: color 0.3s; }
-        .vehicle-details { border-bottom: 1px solid var(--card-detail-border); transition: border-color 0.3s; }
-        .vehicle-details span i { color: var(--primary-color); }
-
-        /* Boutons */
-        .btn-details {
-            background-color: var(--primary-color);
-            color: var(--bg-page);
-        }
-        .btn-outline-action {
-            border-color: var(--text-muted); 
-            color: var(--text-muted); 
-        }
-        .btn-outline-action:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
+        /* Image */
         .vehicle-image-container {
             height: 250px;
             overflow: hidden;
@@ -205,25 +201,113 @@
             transition: transform .6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .card-vehicle:hover img {
-            transform: scale(1.1);
+            transform: scale(1.15); /* Zoom plus grand */
         }
         
-        /* Reste des styles... */
+        /* Badge de Prix */
+        .price-badge {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            background: var(--price-badge-bg); 
+            color: var(--price-badge-text); 
+            font-size: 1.4rem;
+            font-weight: 800;
+            padding: 8px 20px 8px 30px;
+            border-radius: 15px 0 0 15px;
+            box-shadow: -5px 5px 15px var(--shadow-color);
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        /* Corps de la carte */
+        .card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card-body h5 { 
+            color: var(--text-light); 
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Détails techniques */
+        .vehicle-details { 
+            border-bottom: 1px solid var(--card-detail-border); 
+            transition: border-color 0.3s; 
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .vehicle-details span { 
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .vehicle-details span i { 
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        /* Boutons d'Action */
+        .btn-details {
+            background-color: var(--primary-color);
+            color: white; /* Texte blanc sur fond primaire */
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        .btn-details:hover {
+            background-color: #ff4747;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-outline-action {
+            border: 1px solid var(--secondary-color); 
+            color: var(--secondary-color); 
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-outline-action:hover {
+            background-color: var(--secondary-color);
+            color: var(--bg-page);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Animation d'apparition */
+        .fade-item { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            animation: fadeInSlide 0.5s ease-out forwards;
+        }
+        @keyframes fadeInSlide { 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
     </style>
 </head>
-<body class="dark-mode"> <header class="topbar">
+<body class="dark-mode"> 
+<header class="topbar">
     <a href="{{ route('client.dashboard') }}" class="logo">
-      AutoGestion
+        <i class="fas fa-car-side"></i> AutoGestion
     </a>
     
-    <nav class="topbar-nav">
+    <nav class="topbar-nav d-none d-lg-flex">
         <a href="{{ route('client.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
         <a href="{{ route('client.vehicles') }}" class="active"><i class="fas fa-car"></i> Véhicules</a>
         <a href="{{ route('client.cart') }}"><i class="fas fa-shopping-cart"></i> Panier</a>
         <a href="{{ route('client.loan') }}"><i class="fas fa-key"></i> Locations</a>
         <a href="{{ route('client.transactions') }}"><i class="fas fa-exchange-alt"></i> Transactions</a>
-        <a href="{{ route('client.about') }}"><i class="fas fa-info-circle"></i> À Propos</a>
         <a href="{{ route('client.contact') }}"><i class="fas fa-headset"></i> Contact</a> 
     </nav>
     
@@ -243,14 +327,16 @@
 </header>
 
 <main class="main-content">
-    <br>
-    <br>
-    <h2 class="page-header-vehicles"> Notre Flotte de Véhicules de Prestige</h2>
-<br>
+    
+    <h2 class="page-header-vehicles">
+        <i class="fas fa-road"></i> Notre Flotte de Véhicules de Prestige
+    </h2>
+
+    {{-- Formulaire de Filtre Ultra Stylé --}}
     <div class="filter-card">
         <form method="GET" action="{{ route('client.vehicles') }}">
 
-            <div class="row g-3 align-items-center">
+            <div class="row g-3 align-items-center justify-content-center">
 
                 <div class="col-md-4 position-relative">
                     <i class="fa fa-search search-icon"></i>
@@ -259,7 +345,7 @@
                             placeholder="Rechercher (marque, modèle...)">
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2 col-sm-6">
                     <select name="brand" class="form-select">
                         <option value="">Toutes les marques</option>
                         @foreach($brands as $b)
@@ -268,7 +354,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-1 col-sm-6">
                     <select name="year" class="form-select">
                         <option value="">Année</option>
                         @foreach($years as $y)
@@ -277,32 +363,35 @@
                     </select>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-1 col-sm-6">
                     <input type="number" class="form-control"
-                            name="min_price" placeholder="Min" value="{{ request('min_price') }}">
+                            name="min_price" placeholder="Min Prix" value="{{ request('min_price') }}">
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-1 col-sm-6">
                     <input type="number" class="form-control"
-                            name="max_price" placeholder="Max" value="{{ request('max_price') }}">
+                            name="max_price" placeholder="Max Prix" value="{{ request('max_price') }}">
                 </div>
 
-                <div class="col-md-1">
-                    <button class="btn btn-filter-ok w-100">OK</button>
+                <div class="col-md-1 col-sm-12">
+                    <button type="submit" class="btn btn-filter-ok w-100">
+                        <i class="fas fa-filter d-md-none d-inline"></i> Filtrer
+                    </button>
                 </div>
 
             </div>
         </form>
     </div>
 
+    {{-- Liste des Véhicules --}}
     <div class="row g-5">
     @foreach($vehicles as $i => $v)
-    <div class="col-md-4 fade-item" style="animation-delay: {{ $i * 0.10 }}s">
+    <div class="col-xl-4 col-lg-6 col-md-6 fade-item" style="animation-delay: {{ $i * 0.10 }}s">
         <div class="card card-vehicle">
 
             <div class="vehicle-image-container">
                 <img src="/storage/{{ $v->image }}" alt="{{ $v->brand }} {{ $v->model }}" class="card-img-top"> 
-                <span class="price-badge">{{ number_format($v->price) }} USD </span>
+                <span class="price-badge">{{ number_format($v->price) }} USD / jour </span>
             </div>
 
             <div class="card-body">
@@ -314,13 +403,20 @@
                     <span title="Transmission"><i class="fas fa-cogs"></i> Auto</span>
                 </div>
 
-                <a href="{{ route('client.vehicle.show', $v->id) }}"
-                   class="btn btn-details w-100">
-                    <i class="fas fa-info-circle"></i> Voir Détails
-                </a>
-                <button class="btn btn-outline-action w-100 mt-2 rounded-pill">
-                    <i class="fas fa-shopping-cart"></i> Ajouter au Panier
-                </button>
+                {{-- Conteneur des Boutons --}}
+                <div class="mt-auto"> 
+                    <a href="{{ route('client.vehicle.show', $v->id) }}"
+                       class="btn btn-details w-100">
+                        <i class="fas fa-info-circle"></i> Voir Détails
+                    </a>
+                    {{-- Le bouton 'Ajouter au Panier' est sécurisé contre les erreurs (si la route n'existe pas) --}}
+                    @if (Route::has('client.cart.add'))
+                    <button class="btn btn-outline-action w-100">
+                        <i class="fas fa-shopping-cart"></i> Ajouter au Panier
+                    </button>
+                    @endif
+                </div>
+
             </div>
 
         </div>
@@ -358,6 +454,7 @@
         if (savedTheme === 'light') {
             applyTheme(true);
         } else {
+            // Dark Mode par défaut
             applyTheme(false); 
         }
 
