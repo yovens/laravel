@@ -65,39 +65,87 @@
             padding-top: var(--topbar-height); 
             transition: background-color 0.4s, color 0.4s;
         }
-        
-        .topbar {
+            .topbar {
             height: var(--topbar-height);
-            background: var(--card-bg); 
-            box-shadow: 0 4px 15px var(--detail-card-shadow);
-            border-bottom: 1px solid var(--detail-border);
+            background: var(--card-bg);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border-bottom: 1px solid var(--card-border-color);
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1020;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            position: fixed; 
-            top: 0; left: 0; right: 0;
-            z-index: 1020;
-            transition: background 0.4s, box-shadow 0.4s, border-color 0.4s;
+            transition: background 0.4s, border-color 0.4s;
         }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary-color); text-decoration: none; text-shadow: 0 0 5px rgba(255, 107, 107, 0.3); }
-        .light-mode .logo { text-shadow: none; }
-        .logo i { color: var(--primary-color); margin-right: 5px; }
-
-        .topbar-nav { display: flex; align-items: center; flex-grow: 1; margin-right: 40px; }
-        .topbar-nav a {
-            color: var(--text-muted); font-weight: 500; padding: 8px 15px; text-decoration: none;
-            transition: all 0.3s; border-bottom: 3px solid transparent; margin: 0 5px;
-            font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
-        }
-        .topbar-nav a:hover, .topbar-nav a.active { color: var(--primary-color); background-color: var(--bg-page); border-bottom: 3px solid var(--primary-color); }
-
-        .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        .btn-logout { border: 2px solid var(--primary-color); color: var(--primary-color); background-color: transparent; padding: 8px 18px; font-weight: 600; text-transform: uppercase; border-radius: 6px; transition: all 0.2s; }
-        .btn-logout:hover { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.6); transform: scale(1.02); }
-        .btn-theme-toggle { background: none; border: none; color: var(--primary-color); font-size: 1.5rem; transition: color 0.3s, transform 0.2s; }
-        .btn-theme-toggle:hover { color: var(--secondary-color); transform: scale(1.1); }
         
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800;
+            color: var(--primary-color); 
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+            text-decoration: none;
+        }
+        .light-mode .logo { text-shadow: none; }
+
+        .topbar-nav a {
+            color: var(--text-muted);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px; 
+            border-bottom: 3px solid transparent; /* Pour l'effet active */
+        }
+
+        .topbar-nav a:hover, .topbar-nav a.active {
+            color: var(--primary-color);
+            background-color: var(--bg-page); 
+            border-bottom: 3px solid var(--primary-color);
+        }
+.topbar-actions { display: flex; align-items: center; gap: 15px; }
+    .btn-theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--text-muted);
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      width: 45px; height: 45px; padding: 0;
+      border-radius: 50%; cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex; justify-content: center; align-items: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-theme-toggle:hover {
+      color: var(--text-light);
+      background: var(--primary-color);
+      transform: rotate(360deg);
+      box-shadow: 0 0 20px var(--glow-primary);
+      border-color: var(--primary-color);
+    }
+
+    .ultra-icon-button {
+      width: 45px; height: 45px; padding: 0; font-size: 1.1rem;
+      display: flex; justify-content: center; align-items: center;
+      border-radius: 50%; border: 2px solid var(--primary-color);
+      background: transparent; color: var(--primary-color);
+      position: relative; transition: all 0.4s ease;
+      box-shadow: 0 0 5px rgba(13, 148, 136, 0.3);
+    }
+    .ultra-icon-button:hover {
+      background: var(--primary-color); color: var(--bg-page);
+      transform: scale(1.1); box-shadow: 0 0 20px var(--glow-primary);
+    }
+    .ultra-icon-button::before, .ultra-icon-button::after { /* Tooltip */ opacity: 0; transition: opacity 0.3s; }
+    .ultra-icon-button::before { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: var(--secondary-color); color: var(--bg-page); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; pointer-events: none; z-index: 1001; }
+    .ultra-icon-button:hover::before { opacity: 1; visibility: visible; bottom: -45px; }
+    .ultra-icon-button:hover::after { opacity: 1; visibility: visible; }
         /* =================================================================== */
         /* === 3. Styles Spécifiques DÉTAILS VÉHICULE (Ultra Stylisé) ======== */
         /* =================================================================== */
@@ -283,13 +331,14 @@
 </head>
 <body class="dark-mode">
 
+
 <header class="topbar">
     <a href="{{ route('client.dashboard') }}" class="logo">
-        <i class="fas fa-car-side"></i> AutoGestion
+        AutoGestion
     </a>
     
     <nav class="topbar-nav d-none d-lg-flex">
-        <a href="{{ route('client.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{{ route('client.dashboard') }}" ><i class="fas fa-home"></i> Dashboard</a>
         <a href="{{ route('client.vehicles') }}" class="active"><i class="fas fa-car"></i> Véhicules</a>
         <a href="{{ route('client.cart') }}"><i class="fas fa-shopping-cart"></i> Panier</a>
         <a href="{{ route('client.loan') }}"><i class="fas fa-key"></i> Locations</a>
@@ -297,19 +346,19 @@
         <a href="{{ route('client.contact') }}"><i class="fas fa-headset"></i> Contact</a> 
     </nav>
     
-    <div class="topbar-actions">
-        
-        <button id="theme-toggle" class="btn-theme-toggle" aria-label="Basculer le thème clair/sombre">
-            <i class="fas fa-sun"></i> 
-        </button>
-        
-        <form method="POST" action="{{ route('logout') }}" class="d-inline">
-            @csrf
-            <button type="submit" class="btn btn-logout">
-                <i class="fas fa-power-off"></i> DÉCONNEXION
-            </button>
-        </form>
-    </div>
+   <div class="topbar-actions">
+    <button id="theme-toggle" class="btn-theme-toggle" aria-label="Basculer le thème clair/sombre">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+      @csrf
+      {{-- Bouton à icône unique avec un libellé Tooltip --}}
+      <button type="submit" class="btn btn-logout ultra-icon-button" data-tooltip="Déconnexion">
+        <i class="fas fa-power-off"></i>
+      </button>
+    </form>
+  </div>
 </header>
 
 <main class="main-content">
